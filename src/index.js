@@ -1,9 +1,12 @@
 import express from "express";
 import connectDB from "./db/index.js";
+import userRouter from "./routes/User.route.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+app.use(express.json());
+app.use("/api/users", userRouter);
 
 app.get("/", (req, res) => {
     res.send("Hello World");

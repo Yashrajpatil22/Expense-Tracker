@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/User.model.js";
+import {User} from "../models/User.model.js";
 
 const registerUser = async (req, res) => {
 
@@ -23,3 +23,5 @@ const registerUser = async (req, res) => {
     }
 
 }
+
+export {registerUser};
