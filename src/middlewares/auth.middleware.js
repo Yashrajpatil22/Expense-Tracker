@@ -1,7 +1,7 @@
-import User from "../models/user.model.js";
+import { User } from "../models/User.model.js";
 import jwt from "jsonwebtoken";
 
-const authenticateUser = async (req, res, next) => {
+export const authenticateUser = async (req, res, next) => {
   const token = req.header("Authorization")?.replace("Bearer ", "");
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
