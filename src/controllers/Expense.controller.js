@@ -43,14 +43,20 @@ const getExpenses = async (req, res) => {
         i = i - 1;
         checkDate.setFullYear(i);
       }
+      else{
+        return res.status(400).json({ message: "Invalid filter value" });
+      }
       data = await Expense.find({ owner: req.user._id, date: { $gte: checkDate, $lte: today } });
     }
-    else if (startDate && endDate) {
-      if((startDate && !endDate)||(endDate && !startDate)){
-        return res.status(400).json({ message: "Both start date and end date are required" });
+    else if (startDate || endDate) {
+      if((startDate && !endDate) || (endDate && !startDate)){
+        return res.status(400).json({ message: "Both startDate and endDate are required" });
       }
       const start = new Date(startDate);
       const end = new Date(endDate);
+      if(start > end){
+        return res.status(400).json({ message: "startDate cannot be greater than endDate" });
+      }
       data = await Expense.find({ owner: req.user._id, date: { $gte: start, $lte: end } });
     }
     else{
