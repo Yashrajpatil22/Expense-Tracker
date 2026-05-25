@@ -22,8 +22,32 @@ const createExpense = async (req, res) => {
 };
 
 const getExpenses = async (req, res) => {
+  const { filter } = req.query;
   try {
-    const data = await Expense.find({ owner: req.user._id });
+    let data;
+    if (filter){
+      const today = new Date();
+      let checkDate = new Date();
+      if(filter === "week"){
+        let i = checkDate.getDate();
+        i = i - 7;
+        checkDate.setDate(i);
+      }
+      else if(filter === "month"){
+        let i = checkDate.getMonth();
+        i = i - 1;
+        checkDate.setMonth(i);
+      }
+      else if(filter === "year"){
+        let i = checkDate.getFullYear();
+        i = i - 1;
+        checkDate.setFullYear(i);
+      }
+      data = await Expense.find({ owner: req.user._id, date: { $gte: checkDate, $lte: today } });
+    }
+    else{
+      data = await Expense.find({ owner: req.user._id });
+    }
     return res
       .status(200)
       .json({ message: "Expenses fetched successfully", data });
