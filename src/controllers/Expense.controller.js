@@ -24,6 +24,7 @@ const createExpense = async (req, res) => {
 const getExpenses = async (req, res) => {
   const { filter, startDate, endDate } = req.query;
   let { page, limit } = req.query;
+  const {sort} = req.query;
   if(!page){
     page = "1";
   }
@@ -40,6 +41,7 @@ const getExpenses = async (req, res) => {
     let data;
     
     const query = { owner: req.user._id };
+    const sortQuery = { date: -1};
     if (filter){
       const today = new Date();
       let checkDate = new Date();
@@ -76,8 +78,29 @@ const getExpenses = async (req, res) => {
       // data = await Expense.find({ owner: req.user._id, date: { $gte: start, $lte: end } });
       query.date = { $gte: start, $lte: end };
     }
+    if(sort){
+      if(sort){
+        if(sort === "oldest"){
+          sortQuery.date = 1;
+        }
+        else if(sort === "amountAsc"){
+          delete sortQuery.date;
+          sortQuery.amount = 1;
+        }
+        else if(sort === "amountDesc"){
+          delete sortQuery.date;
+          sortQuery.amount = -1;
+        }
+        else if(sort === "latest"){
+          sortQuery.date = -1;
+        }
+        else{
+          return res.status(400).json({ message: "Invalid sort value" });
+        }
+      }
+    }
     
-      data = await Expense.find(query).skip(skip).limit(limitNumber);
+    data = await Expense.find(query).sort(sortQuery).skip(skip).limit(limitNumber);
     
     return res
       .status(200)
