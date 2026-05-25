@@ -23,8 +23,23 @@ const createExpense = async (req, res) => {
 
 const getExpenses = async (req, res) => {
   const { filter, startDate, endDate } = req.query;
+  let { page, limit } = req.query;
+  if(!page){
+    page = "1";
+  }
+  if(!limit){
+    limit = "5";
+  }
+  const pageNumber = Number.parseInt(page);
+  const limitNumber = Number.parseInt(limit);
+  if(isNaN(pageNumber) || pageNumber <= 0 || isNaN(limitNumber) || limitNumber <= 0){
+    return res.status(400).json({ message: "Invalid page or limit values" });
+  }
+  const skip = (pageNumber - 1) * limitNumber;
   try {
     let data;
+    
+    const query = { owner: req.user._id };
     if (filter){
       const today = new Date();
       let checkDate = new Date();
@@ -46,7 +61,8 @@ const getExpenses = async (req, res) => {
       else{
         return res.status(400).json({ message: "Invalid filter value" });
       }
-      data = await Expense.find({ owner: req.user._id, date: { $gte: checkDate, $lte: today } });
+      // data = await Expense.find({ owner: req.user._id, date: { $gte: checkDate, $lte: today } });
+      query.date = { $gte: checkDate, $lte: today };
     }
     else if (startDate || endDate) {
       if((startDate && !endDate) || (endDate && !startDate)){
@@ -57,11 +73,12 @@ const getExpenses = async (req, res) => {
       if(start > end){
         return res.status(400).json({ message: "startDate cannot be greater than endDate" });
       }
-      data = await Expense.find({ owner: req.user._id, date: { $gte: start, $lte: end } });
+      // data = await Expense.find({ owner: req.user._id, date: { $gte: start, $lte: end } });
+      query.date = { $gte: start, $lte: end };
     }
-    else{
-      data = await Expense.find({ owner: req.user._id });
-    }
+    
+      data = await Expense.find(query).skip(skip).limit(limitNumber);
+    
     return res
       .status(200)
       .json({ message: "Expenses fetched successfully", data });
