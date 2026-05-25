@@ -22,7 +22,7 @@ const createExpense = async (req, res) => {
 };
 
 const getExpenses = async (req, res) => {
-  const { filter } = req.query;
+  const { filter, startDate, endDate } = req.query;
   try {
     let data;
     if (filter){
@@ -44,6 +44,14 @@ const getExpenses = async (req, res) => {
         checkDate.setFullYear(i);
       }
       data = await Expense.find({ owner: req.user._id, date: { $gte: checkDate, $lte: today } });
+    }
+    else if (startDate && endDate) {
+      if((startDate && !endDate)||(endDate && !startDate)){
+        return res.status(400).json({ message: "Both start date and end date are required" });
+      }
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      data = await Expense.find({ owner: req.user._id, date: { $gte: start, $lte: end } });
     }
     else{
       data = await Expense.find({ owner: req.user._id });
