@@ -2,11 +2,13 @@ import express from "express";
 import connectDB from "./db/index.js";
 import userRouter from "./routes/User.route.js";
 import expenseRouter from "./routes/Expense.route.js";
+import cors from "cors";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use("/api/users", userRouter);
 app.use("/api/expenses", expenseRouter);
 
