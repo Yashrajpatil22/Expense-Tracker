@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import ProtectedRoute from "../components/ProtectedRoute";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchExpenses = async () => {
       const token = localStorage.getItem("token");
@@ -25,7 +27,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <ProtectedRoute>
+    
       <div>
         <div>Dashboard</div>
         {expenses.map((expense) => {
@@ -38,8 +40,17 @@ function Dashboard() {
             </div>
           );
         })}
+        <button onClick={() => {
+          navigate("/add-expense");
+        }}>
+          Add Expense
+        </button>
+        <button onClick={() => {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }}>Logout</button>
       </div>
-    </ProtectedRoute>
+    
   );
 }
 
