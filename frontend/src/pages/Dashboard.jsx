@@ -1,8 +1,11 @@
 import React from 'react'
+import ProtectedRoute from '../components/ProtectedRoute';
 
 function Dashboard() {
   return (
-    <div>Dashboard</div>
+    <ProtectedRoute>
+      <div>Dashboard</div>
+    </ProtectedRoute>
   )
 }
 
