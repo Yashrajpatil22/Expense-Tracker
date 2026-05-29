@@ -21,6 +21,10 @@ function Dashboard() {
         setExpenses(response.data.data);
       } catch (error) {
         console.log(error);
+        if(error.response?.status === 401){
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
       }
     };
     fetchExpenses();
