@@ -41,7 +41,7 @@ function Dashboard() {
           },
         },
       );
-      const data = expenses.filter((expense) => expense._id != id);
+      const data = expenses.filter((expense) => expense._id !== id);
       setExpenses(data);
     } catch (error) {
       console.log("Failed to delete");
@@ -64,7 +64,12 @@ function Dashboard() {
             <h3>{expense.category}</h3>
             <h3>{new Date(expense.date).toLocaleDateString()}</h3>
             <div className="flex gap-4 mt-2 justify-end">
-              <button className="bg-blue-500 hover:bg-blue-600 rounded-lg p-2 font-semibold cursor-pointer">
+              <button
+                className="bg-blue-500 hover:bg-blue-600 rounded-lg p-2 font-semibold cursor-pointer"
+                onClick={() => {
+                  navigate(`/edit-expense/${expense._id}`);
+                }}
+              >
                 Edit
               </button>
               <button
