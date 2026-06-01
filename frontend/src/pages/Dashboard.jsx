@@ -21,7 +21,7 @@ function Dashboard() {
         setExpenses(response.data.data);
       } catch (error) {
         console.log(error);
-        if(error.response?.status === 401){
+        if (error.response?.status === 401) {
           localStorage.removeItem("token");
           navigate("/login");
         }
@@ -29,6 +29,24 @@ function Dashboard() {
     };
     fetchExpenses();
   }, []);
+
+  const deleteExpense = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+      await axios.delete(
+        `http://localhost:3001/api/expenses/delete-expense/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      const data = expenses.filter((expense) => expense._id != id);
+      setExpenses(data);
+    } catch (error) {
+      console.log("Failed to delete");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
@@ -45,6 +63,17 @@ function Dashboard() {
             <h3>{expense.amount}</h3>
             <h3>{expense.category}</h3>
             <h3>{new Date(expense.date).toLocaleDateString()}</h3>
+            <div className="flex gap-4 mt-2 justify-end">
+              <button className="bg-blue-500 hover:bg-blue-600 rounded-lg p-2 font-semibold cursor-pointer">
+                Edit
+              </button>
+              <button
+                className="bg-red-500 hover:bg-red-600 rounded-lg p-2 font-semibold cursor-pointer"
+                onClick={() => deleteExpense(expense._id)}
+              >
+                Delete
+              </button>
+            </div>
           </div>
         );
       })}
