@@ -9,12 +9,12 @@ function EditExpense() {
   const [date, setDate] = useState("");
   const navigate = useNavigate();
   const { expenseId } = useParams();
-  console.log("Expense ID:", expenseId);
+
 
   useEffect(() => {
     const fetchExpense = async () => {
       const token = localStorage.getItem("token");
-      console.log("Fetching expense with ID:", expenseId);
+
       try{
         const response = await axios.get(
           `http://localhost:3001/api/expenses/get-expense/${expenseId}`,
@@ -24,7 +24,7 @@ function EditExpense() {
             },
           }
         );
-        console.log("Expense data:", response.data);
+
         const expense = response.data.data;
         setTitle(expense.title);
         setAmount(expense.amount);

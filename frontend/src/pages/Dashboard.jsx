@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
+  const [filter, setFilter] = useState("All");
   const navigate = useNavigate();
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -48,10 +49,41 @@ function Dashboard() {
     }
   };
 
+  useEffect(() => {
+    const fetchExpensesByFilter = async () => {
+      const token = localStorage.getItem("token");
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/api/expenses/get-expenses?filter=${filter}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setExpenses(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchExpensesByFilter();
+  }, [filter]);
+
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-center">Dashboard</h1>
+        <label className="text-slate-300">Filter:</label>
+        <select
+          className="bg-slate-800 text-white border border-slate-700 rounded-md mx-2 p-1"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="week">Last Week</option>
+          <option value="month">Last Month</option>
+          <option value="year">Last Year</option>
+        </select>
       </div>
       {expenses.map((expense) => {
         return (
