@@ -4,6 +4,12 @@ A full-stack Expense Tracker application built using the MERN stack (MongoDB, Ex
 
 Users can register, log in securely, manage their expenses, filter and sort records, and navigate through paginated expense data.
 
+## Live Demo
+
+Application: https://expense-tracker-one-rose-70.vercel.app
+
+Backend API: https://expense-tracker-fdb2.onrender.com
+
 ---
 
 ## Features
