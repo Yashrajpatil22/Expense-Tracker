@@ -8,6 +8,7 @@ function Dashboard() {
   const [filter, setFilter] = useState("All");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [sort, setSort] = useState("latest");
   const navigate = useNavigate();
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -22,7 +23,6 @@ function Dashboard() {
           },
         );
         setExpenses(response.data.data);
-        console.log(response.data.totalPages);
         setTotalPages(response.data.totalPages);
       } catch (error) {
         console.log(error);
@@ -60,7 +60,7 @@ function Dashboard() {
       try {
         if (filter === "All") {
           response = await axios.get(
-            `http://localhost:3001/api/expenses/get-expenses`,
+            `http://localhost:3001/api/expenses/get-expenses?page=${page}&sort=${sort}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ function Dashboard() {
         }
         else{
           response = await axios.get(
-            `http://localhost:3001/api/expenses/get-expenses?filter=${filter}`,
+            `http://localhost:3001/api/expenses/get-expenses?filter=${filter}&page=${page}&sort=${sort}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -84,45 +84,42 @@ function Dashboard() {
       }
     };
     fetchExpensesByFilter();
-  }, [filter]);
+  }, [filter,page,sort]);
 
-  useEffect(() => {
-    const fetchExpensesByFilter = async () => {
-      const token = localStorage.getItem("token");
-      let response;
-      try {
-          response = await axios.get(
-            `http://localhost:3001/api/expenses/get-expenses?page=${page}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            },
-          );
-        
-        setExpenses(response.data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchExpensesByFilter();
-  }, [page]);
+
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-center">Dashboard</h1>
-        <label className="text-slate-300">Filter:</label>
-        <select
-          className="bg-slate-800 text-white border border-slate-700 rounded-md mx-2 p-1"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="All">All</option>
-          <option value="week">Last Week</option>
-          <option value="month">Last Month</option>
-          <option value="year">Last Year</option>
-        </select>
+        <div className="flex gap-4 mt-4 justify-between px-5">
+          <div>
+            <label className="text-slate-300">Filter:</label>
+            <select
+              className="bg-slate-800 text-white border border-slate-700 rounded-md mx-2 p-1"
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+            >
+              <option value="All">All</option>
+              <option value="week">Last Week</option>
+              <option value="month">Last Month</option>
+              <option value="year">Last Year</option>
+            </select>
+          </div>
+          <div>
+            <label className="text-slate-300">Filter:</label>
+            <select
+              className="bg-slate-800 text-white border border-slate-700 rounded-md mx-2 p-1"
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+            >
+              <option value="latest">Latest</option>
+              <option value="oldest">Oldest</option>
+              <option value="amountAsc">Amount Ascending</option>
+              <option value="amountDesc">Amount Descending</option>
+            </select>
+          </div>
+        </div>
       </div>
       {expenses.map((expense) => {
         return (

@@ -102,9 +102,8 @@ const getExpenses = async (req, res) => {
     
     data = await Expense.find(query).sort(sortQuery).skip(skip).limit(limitNumber);
     const totalExpenses = await Expense.countDocuments(query);
-    console.log(totalExpenses);
     const totalPages = Math.ceil(totalExpenses / limitNumber);
-    console.log(totalPages);
+
     
     return res
       .status(200)
