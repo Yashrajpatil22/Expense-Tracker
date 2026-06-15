@@ -180,14 +180,14 @@ const getExpenseFromID = async (req,res) => {
     return res.status(400).json({ message: "Expense id is required" });
   }
   try {
-    const expense = await Expense.findById(expenseId);
-    if (!expense) {
+    const data = await Expense.findById(expenseId);
+    if (!data) {
       return res.status(404).json({ message: "Expense with the id not found" });
     }
-    if(!expense.owner.equals(req.user._id)){
+    if(!data.owner.equals(req.user._id)){
       return res.status(403).json({ message: "You are not authorized to perform this action" });
     }
-    return res.status(200).json({ message: "Expense fetched successfully", expense });
+    return res.status(200).json({ message: "Expense fetched successfully", data });
   }catch (error) {
     console.log("Something went wrong while fetching expense", error);
     return res.status(500).json({ message: "Something went wrong while fetching expense" });

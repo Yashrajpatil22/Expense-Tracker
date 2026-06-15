@@ -1,8 +1,6 @@
-
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-
 
 function EditExpense() {
   const [title, setTitle] = useState("");
@@ -11,8 +9,61 @@ function EditExpense() {
   const [date, setDate] = useState("");
   const navigate = useNavigate();
   const { expenseId } = useParams();
+  console.log("Expense ID:", expenseId);
 
-  
+  useEffect(() => {
+    const fetchExpense = async () => {
+      const token = localStorage.getItem("token");
+      console.log("Fetching expense with ID:", expenseId);
+      try{
+        const response = await axios.get(
+          `http://localhost:3001/api/expenses/get-expense/${expenseId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Expense data:", response.data);
+        const expense = response.data.data;
+        setTitle(expense.title);
+        setAmount(expense.amount);
+        setCategory(expense.category);
+        setDate(expense.date.split("T")[0]); 
+      } catch (error) {
+        console.error("Error fetching expense:", error);
+      }
+    }
+    fetchExpense();
+  }, []);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `http://localhost:3001/api/expenses/update-expense/${expenseId}`,
+        {
+          title,
+          amount,
+          category,
+          date,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        navigate("/login");
+      }
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-slate-950">
@@ -78,4 +129,4 @@ function EditExpense() {
   );
 }
 
-export default EditExpense
+export default EditExpense;
