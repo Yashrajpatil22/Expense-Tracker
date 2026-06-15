@@ -174,4 +174,24 @@ const deleteExpense = async (req, res) => {
   }
 };
 
-export { createExpense, getExpenses, updateExpense, deleteExpense };
+const getExpenseFromID = async (req,res) => {
+  const { expenseId } = req.params;
+  if(!expenseId){
+    return res.status(400).json({ message: "Expense id is required" });
+  }
+  try {
+    const expense = await Expense.findById(expenseId);
+    if (!expense) {
+      return res.status(404).json({ message: "Expense with the id not found" });
+    }
+    if(!expense.owner.equals(req.user._id)){
+      return res.status(403).json({ message: "You are not authorized to perform this action" });
+    }
+    return res.status(200).json({ message: "Expense fetched successfully", expense });
+  }catch (error) {
+    console.log("Something went wrong while fetching expense", error);
+    return res.status(500).json({ message: "Something went wrong while fetching expense" });
+  }
+}
+
+export { createExpense, getExpenses, updateExpense, deleteExpense, getExpenseFromID };
