@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 function Dashboard() {
   const [expenses, setExpenses] = useState([]);
   const [filter, setFilter] = useState("All");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -20,6 +22,8 @@ function Dashboard() {
           },
         );
         setExpenses(response.data.data);
+        console.log(response.data.totalPages);
+        setTotalPages(response.data.totalPages);
       } catch (error) {
         console.log(error);
         if (error.response?.status === 401) {
@@ -52,15 +56,28 @@ function Dashboard() {
   useEffect(() => {
     const fetchExpensesByFilter = async () => {
       const token = localStorage.getItem("token");
+      let response;
       try {
-        const response = await axios.get(
-          `http://localhost:3001/api/expenses/get-expenses?filter=${filter}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
+        if (filter === "All") {
+          response = await axios.get(
+            `http://localhost:3001/api/expenses/get-expenses`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
             },
-          },
-        );
+          );
+        }
+        else{
+          response = await axios.get(
+            `http://localhost:3001/api/expenses/get-expenses?filter=${filter}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+        }
         setExpenses(response.data.data);
       } catch (error) {
         console.log(error);
@@ -68,6 +85,28 @@ function Dashboard() {
     };
     fetchExpensesByFilter();
   }, [filter]);
+
+  useEffect(() => {
+    const fetchExpensesByFilter = async () => {
+      const token = localStorage.getItem("token");
+      let response;
+      try {
+          response = await axios.get(
+            `http://localhost:3001/api/expenses/get-expenses?page=${page}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          );
+        
+        setExpenses(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchExpensesByFilter();
+  }, [page]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
@@ -131,6 +170,27 @@ function Dashboard() {
           }}
         >
           Logout
+        </button>
+      </div>
+      <div className="flex items-center justify-center gap-4 mt-6">
+        <button
+          className="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg border border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+
+        <span className="text-slate-300 font-medium">
+          Page {page} of {totalPages}
+        </span>
+
+        <button
+          className="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg border border-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={() => setPage(page + 1)}
+          disabled={page === totalPages}
+        >
+          Next
         </button>
       </div>
     </div>
