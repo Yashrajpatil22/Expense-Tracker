@@ -67,8 +67,7 @@ function Dashboard() {
               },
             },
           );
-        }
-        else{
+        } else {
           response = await axios.get(
             `http://localhost:3001/api/expenses/get-expenses?filter=${filter}&page=${page}&sort=${sort}`,
             {
@@ -79,14 +78,13 @@ function Dashboard() {
           );
         }
         setExpenses(response.data.data);
+        setTotalPages(response.data.totalPages);
       } catch (error) {
         console.log(error);
       }
     };
     fetchExpensesByFilter();
-  }, [filter,page,sort]);
-
-
+  }, [filter, page, sort]);
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
@@ -98,7 +96,10 @@ function Dashboard() {
             <select
               className="bg-slate-800 text-white border border-slate-700 rounded-md mx-2 p-1"
               value={filter}
-              onChange={(e) => setFilter(e.target.value)}
+              onChange={(e) => {
+                setFilter(e.target.value);
+                setPage(1);
+              }}
             >
               <option value="All">All</option>
               <option value="week">Last Week</option>
@@ -107,11 +108,14 @@ function Dashboard() {
             </select>
           </div>
           <div>
-            <label className="text-slate-300">Filter:</label>
+            <label className="text-slate-300">Sort:</label>
             <select
               className="bg-slate-800 text-white border border-slate-700 rounded-md mx-2 p-1"
               value={sort}
-              onChange={(e) => setSort(e.target.value)}
+              onChange={(e) => {
+                setSort(e.target.value);
+                setPage(1);
+              }}
             >
               <option value="latest">Latest</option>
               <option value="oldest">Oldest</option>
