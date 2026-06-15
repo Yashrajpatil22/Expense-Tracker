@@ -8,7 +8,9 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: "https://expense-tracker-one-rose-70.vercel.app"
+}));
 app.use("/api/users", userRouter);
 app.use("/api/expenses", expenseRouter);
 
