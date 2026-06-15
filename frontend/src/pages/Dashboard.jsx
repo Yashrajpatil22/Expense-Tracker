@@ -15,7 +15,7 @@ function Dashboard() {
       const token = localStorage.getItem("token");
       try {
         const response = await axios.get(
-          "http://localhost:3001/api/expenses/get-expenses",
+          `${import.meta.env.VITE_API_URL}/api/expenses/get-expenses`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ function Dashboard() {
     const token = localStorage.getItem("token");
     try {
       await axios.delete(
-        `http://localhost:3001/api/expenses/delete-expense/${id}`,
+        `${import.meta.env.VITE_API_URL}/api/expenses/delete-expense/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -60,7 +60,7 @@ function Dashboard() {
       try {
         if (filter === "All") {
           response = await axios.get(
-            `http://localhost:3001/api/expenses/get-expenses?page=${page}&sort=${sort}`,
+            `${import.meta.env.VITE_API_URL}/api/expenses/get-expenses?page=${page}&sort=${sort}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -69,7 +69,7 @@ function Dashboard() {
           );
         } else {
           response = await axios.get(
-            `http://localhost:3001/api/expenses/get-expenses?filter=${filter}&page=${page}&sort=${sort}`,
+            `${import.meta.env.VITE_API_URL}/api/expenses/get-expenses?filter=${filter}&page=${page}&sort=${sort}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

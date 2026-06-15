@@ -15,7 +15,7 @@ function AddExpense() {
         e.preventDefault();
         try{
           const token = localStorage.getItem("token");
-          const response = await axios.post("http://localhost:3001/api/expenses/create", {
+          const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/expenses/create`, {
             title,
             amount,
             category,

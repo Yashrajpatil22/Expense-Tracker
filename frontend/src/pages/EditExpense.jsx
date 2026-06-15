@@ -17,7 +17,7 @@ function EditExpense() {
 
       try{
         const response = await axios.get(
-          `http://localhost:3001/api/expenses/get-expense/${expenseId}`,
+          `${import.meta.env.VITE_API_URL}/api/expenses/get-expense/${expenseId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -42,7 +42,7 @@ function EditExpense() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.put(
-        `http://localhost:3001/api/expenses/update-expense/${expenseId}`,
+        `${import.meta.env.VITE_API_URL}/api/expenses/update-expense/${expenseId}`,
         {
           title,
           amount,
