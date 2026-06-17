@@ -144,4 +144,3 @@ This project helped in understanding:
 * Filtering and Sorting
 * Frontend-Backend Communication
 
-Built as part of a Backend Development learning journey.
